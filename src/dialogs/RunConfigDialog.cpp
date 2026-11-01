@@ -132,6 +132,10 @@ void RunConfigDialog::insertIntoCommand(const QString &path)
 void RunConfigDialog::loadConfig()
 {
     ApplicationSettings settings;
+	ui->keyEdit->clear();
+	ui->valueEdit->clear();
+	ui->commandEdit->clear();
+	ui->buildName->clear();
 	
 	settings.beginGroup("FolderAsWorkspace");
 	QString RootPath = settings.value("RootPath").toString();
