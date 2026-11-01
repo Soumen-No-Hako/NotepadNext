@@ -355,6 +355,11 @@ QString ScintillaNext::getFilePath() const
     return QDir::toNativeSeparators(fileInfo.canonicalFilePath());
 }
 
+QString ScintillaNext::getToolTip() const
+{
+    return isFile() ? getFilePath() : getName();
+}
+
 void ScintillaNext::setFoldMarkers(const QString &type)
 {
     QMap<QString, QList<int>> map{
@@ -633,6 +638,17 @@ void ScintillaNext::removeConsecutiveDuplicateLines()
     const UndoAction ua(this);
     setTargetRange(0, textLength());
     replaceTarget(result.length(), result.constData());
+}
+
+void ScintillaNext::trimTrailingWhitespace()
+{
+    Finder f(this);
+    const UndoAction ua(this);
+
+    // $ alone only matches before \n, so handle CRLF and CR line endings explicitly
+    f.options().text = QStringLiteral("[ \\t]+(?=[\\r\\n]|$)");
+    f.options().flags = Scintilla::FindOption::RegExp;
+    f.replaceAll(QString());
 }
 
 void ScintillaNext::dragEnterEvent(QDragEnterEvent *event)
